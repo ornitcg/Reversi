@@ -1,0 +1,9 @@
+
+SIDE_SIZE = 8
+TURN_BLACK = "X "
+TURN_WHITE = "O "
+EMPTY = ". "
+UP = -1
+DOWN = 1
+LEFT = -1
+RIGHT = 1
