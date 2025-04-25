@@ -9,6 +9,9 @@ class Game_Board:
         self.init_board(size)
         self.winner = None
         self.game_over = False
+        self.black_count = 0
+        self.white_count = 0
+
 
 
     def init_board(self, size):
@@ -17,10 +20,11 @@ class Game_Board:
             for j in range(size):
                 row.append(EMPTY)
             self.board.append(row)
-        self.board[3][3] = TURN_BLACK
-        self.board[3][4] = TURN_WHITE
-        self.board[4][3] = TURN_WHITE
-        self.board[4][4] = TURN_BLACK
+
+        self.board[MIDDLE-1][MIDDLE-1] = TURN_RED
+        self.board[MIDDLE-1][MIDDLE] = TURN_WHITE
+        self.board[MIDDLE][MIDDLE-1] = TURN_WHITE
+        self.board[MIDDLE][MIDDLE] = TURN_RED
 
     def display_board(self):
         for row in self.board:
@@ -32,7 +36,7 @@ class Game_Board:
     def display_GUI_board(self, board):
         rows = SIDE_SIZE
         cols = rows
-        cell_size = 60
+        cell_size = CELL_SIZE
         width = cols * cell_size
         height = rows * cell_size
 
@@ -41,7 +45,7 @@ class Game_Board:
         root.title("Reversi")
 
         # Create a canvas to draw on
-        canvas = Canvas(root, width=width, height=height, bg="light blue")
+        canvas = Canvas(root, width=width, height=height+EXTRA, bg=BACKGROUND_COLOR)
         canvas.pack()
 
         # Draw the grid and pieces
@@ -56,22 +60,22 @@ class Game_Board:
                 # Draw cell border
                 canvas.create_rectangle(x1, y1, x2, y2, outline="black")
 
-                # Draw the piece based on cell value
+                # Draw the cells content based on cells values
                 cell_value = board[row][col]
-                if cell_value == TURN_BLACK:  # Player 1 (black)
+                if cell_value == TURN_RED:
                     canvas.create_oval(
-                        x1 + 5, y1 + 5,
-                        x2 - 5, y2 - 5,
-                        fill="black"
+                        x1 + PADDING, y1 + PADDING,
+                        x2 - PADDING, y2 - PADDING,
+                        fill=FILL_COLOR_PLAYER1
                     )
                 elif cell_value == TURN_WHITE:  # Player 2 (white)
                     canvas.create_oval(
-                        x1 + 5, y1 + 5,
-                        x2 - 5, y2 - 5,
-                        fill="white", outline="black"
+                        x1 + PADDING, y1 + PADDING,
+                        x2 - PADDING, y2 - PADDING,
+                        fill=FILL_COLOR_PLAYER2, outline=OUTLINE_COLOR
                     )
 
-        # # Add row and column labels
+        # # Add row and column labels  #TODO: Uncomment this if you want to add labels
         # for i in range(rows):
         #     canvas.create_text(
         #         5, i * cell_size + cell_size // 2,
@@ -86,3 +90,8 @@ class Game_Board:
 
         # Start the GUI event loop
         root.mainloop()
+
+
+
+    def get_board(self):
+        return self.board
