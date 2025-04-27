@@ -1,0 +1,6 @@
+
+
+
+
+class Heuristic:
+    pass

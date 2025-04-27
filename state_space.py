@@ -1,10 +1,10 @@
 from constants import *
 from action import Action
-
+from node import *
 
 class State_Space:
-    def __init__(self, game_board, transition_model=None):
-        self.initial_state = game_board
+    def __init__(self,  transition_model=None, board_side_size=SIDE_SIZE):
+        self.initial_state = self.set_initistial_state(board_side_size)
         self.transition_model = transition_model
 
 
@@ -24,3 +24,18 @@ class State_Space:
                         legal_actions.append(action)
 
         return legal_actions
+
+    def set_initistial_state(self, size):
+        board = []
+        for i in range(size):
+            row = []
+            for j in range(size):
+                row.append(EMPTY)
+            board.append(row)
+
+        board[MIDDLE-1][MIDDLE-1] = TURN_RED
+        board[MIDDLE-1][MIDDLE] = TURN_WHITE
+        board[MIDDLE][MIDDLE-1] = TURN_WHITE
+        board[MIDDLE][MIDDLE] = TURN_RED
+
+        return Node(board, MAX)

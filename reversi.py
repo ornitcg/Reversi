@@ -3,6 +3,7 @@ from state_space import *
 from argparse import *
 from min_max import *
 from transition_model import *
+from heuristic import *
 
 
 def main():
@@ -12,11 +13,12 @@ def main():
     parser.add_argument('--ahead', type=int, default=None, help='Look ahead specified number of moves')
     args = parser.parse_args()
 
-    game_board = Game_Board()
     transition_model = Transition_Model()
-    state_space = State_Space(game_board, transition_model)
+    state_space = State_Space( transition_model, SIDE_SIZE)
     initial_state = state_space.get_initial_state()
-    minmax = Min_Max(initial_state,  state_space)
+    heuristic = Heuristic()
+    minmax = Min_Max(initial_state,  state_space) # default depth is 1 ,default player is MAX, default heuristic is None
+    minmax.play()
 
     if args.displayAllActions is not None:
         # Generate a board with this many disks and show all legal moves
@@ -26,12 +28,9 @@ def main():
         print(f"Running methodical game showing first {args.methodical} states")
         # Your implementation here
     elif args.ahead is not None:# Default behavior
-        game_board.display_board()
-        game_board.display_GUI_board(game_board.board)
+        pass
 
-    # start_state = state_space.get_initial_state()
-    game_board.display_board()
-    game_board.display_GUI_board(game_board.board)
+
 
 if __name__ == "__main__":
     main()

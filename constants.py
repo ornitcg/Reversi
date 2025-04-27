@@ -3,6 +3,9 @@ SIDE_SIZE = 8
 TURN_RED = "X "
 TURN_WHITE = "O "
 EMPTY = ". "
+MAX = TURN_RED
+MIN = TURN_WHITE
+
 
 BACKGROUND_COLOR = "light blue"
 OUTLINE_COLOR = "black"

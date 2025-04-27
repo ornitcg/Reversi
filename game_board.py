@@ -2,12 +2,9 @@ from constants import *
 from tkinter import *
 
 class Game_Board:
-    def __init__(self, size = SIDE_SIZE, board = None):
-        self.board = board
+    def __init__(self, size = SIDE_SIZE):
         self.cols = size
         self.rows = size
-        if self.board is None:
-            self.init_board(size)
         self.winner = None
         self.game_over = False
         self.black_count = 0
@@ -15,21 +12,9 @@ class Game_Board:
 
 
 
-    def init_board(self, size):
-        self.board = []
-        for i in range(size):
-            row = []
-            for j in range(size):
-                row.append(EMPTY)
-            self.board.append(row)
 
-        self.board[MIDDLE-1][MIDDLE-1] = TURN_RED
-        self.board[MIDDLE-1][MIDDLE] = TURN_WHITE
-        self.board[MIDDLE][MIDDLE-1] = TURN_WHITE
-        self.board[MIDDLE][MIDDLE] = TURN_RED
-
-    def display_board(self):
-        for row in self.board:
+    def display_board(self, board):
+        for row in board:
             for i in range(SIDE_SIZE):
                 print(row[i], end=' ')
             print()
@@ -85,6 +70,3 @@ class Game_Board:
 
 
 
-
-    def get_board(self):
-        return self.board
