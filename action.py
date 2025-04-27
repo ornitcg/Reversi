@@ -10,7 +10,8 @@ class Action:
 
     def apply(self, board):
         self.add(board)
-        self.flip(board)
+        pieces_to_flip = self.check_all_directions(board)
+        self.flip(board, pieces_to_flip)
 
     # add a new piece to the board on x,y
     def add(self, board):
