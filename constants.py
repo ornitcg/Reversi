@@ -5,6 +5,7 @@ TURN_WHITE = "O "
 EMPTY = ". "
 MAX = TURN_RED
 MIN = TURN_WHITE
+TIE = 0
 
 
 BACKGROUND_COLOR = "light blue"

@@ -8,7 +8,7 @@ class Action:
         self.y = y-1
 
 
-    def execute(self, board):
+    def apply(self, board):
         self.add(board)
         self.flip(board)
 
