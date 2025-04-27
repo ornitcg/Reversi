@@ -5,48 +5,44 @@ class Action:
     def __init__(self, board, turn, x , y ):
         self.turn = turn
         self.board = board
-        self.x = x
-        self.y = y
+        self.x = x-1
+        self.y = y-1
         self.score = 0
-        self.to_flip = []
+        self.__pieces_to_flip = []
         self.__check_all_directions()
-        self.__is_legal = len(self.to_flip) > 0
+        self.__is_legal = len(self.__pieces_to_flip) > 0
 
 
     def execute(self):
         self.__add()
-        self.__fill_to_flip()
+        self.__flip()
 
-
+    # add a new piece to the board on x,y
     def __add(self):
         self.board[self.x][self.y] = self.turn
 
     def __check_all_directions(self):
-        self.__check_horizontal(LEFT)
-        self.__check_horizontal(RIGHT)
-        self.__check_vertical(UP)
-        self.__check_vertical(DOWN)
-        self.__check_diagonal(RIGHT, UP)   #main diagonal
-        self.__check_diagonal(LEFT, DOWN)  #main diagonal
-        self.__check_diagonal(LEFT, UP)    #second diagonal
-        self.__check_diagonal(RIGHT, DOWN)  #second diagonal
+        directions = [(LEFT,STAY),
+                      (RIGHT,STAY),
+                      (STAY,UP),
+                      (STAY,DOWN),
+                      (RIGHT,UP),
+                      (LEFT,DOWN),
+                      (LEFT,UP),
+                      (RIGHT,DOWN)]
+
+        for direction in directions:
+            horizontal_direction = direction[0]
+            vertical_direction = direction[1]
+            self.__check_direction(horizontal_direction, vertical_direction)
 
 
-    def __check_horizontal(self, direction):
-        self.__fill_to_flip(direction, STAY)
 
 
-    def __check_vertical(self, direction):
-        self.__fill_to_flip(STAY, direction)
-
-    def __check_diagonal(self, horizontal_direction, vertical_direction):
-        self.__fill_to_flip(horizontal_direction, vertical_direction)
-
-
-    def __fill_to_flip(self, horizontal_direction, vertical_direction):
+    def __check_direction(self, horizontal_direction, vertical_direction):
         row = self.x
         col = self.y
-        while row > 0 and col > 0:
+        while row >= 0 and col >= 0 and row < SIDE_SIZE and col < SIDE_SIZE:
             row += vertical_direction
             col += horizontal_direction
             if self.board[row][col] == self.turn:
@@ -54,11 +50,11 @@ class Action:
             elif self.board[row][col] == EMPTY:
                 break
             else:
-                self.to_flip.append((row, col))
+                self.__pieces_to_flip.append((row, col))
 
 
-    def flip(self):
-        for i in self.to_flip:
+    def __flip(self):
+        for i in self.__pieces_to_flip:
             self.board[i[0]][i[1]] = self.turn
 
 
@@ -66,3 +62,21 @@ class Action:
 
     def is_legal(self):
         return self.__is_legal
+
+
+    def get_score(self):
+        return self.score
+
+    def get_pieces_to_flip(self):
+        return self.__pieces_to_flip
+
+    def get_position(self):
+        return self.x, self.y
+
+    def get_turn(self):
+        return self.turn
+
+    def get_board(self):
+        return self.board
+
+
