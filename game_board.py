@@ -2,11 +2,12 @@ from constants import *
 from tkinter import *
 
 class Game_Board:
-    def __init__(self, size = SIDE_SIZE):
-        self.board = []
+    def __init__(self, size = SIDE_SIZE, board = None):
+        self.board = board
         self.cols = size
         self.rows = size
-        self.init_board(size)
+        if self.board is None:
+            self.init_board(size)
         self.winner = None
         self.game_over = False
         self.black_count = 0
@@ -15,6 +16,7 @@ class Game_Board:
 
 
     def init_board(self, size):
+        self.board = []
         for i in range(size):
             row = []
             for j in range(size):

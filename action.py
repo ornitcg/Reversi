@@ -7,9 +7,11 @@ class Action:
         self.board = board
         self.x = x
         self.y = y
+        self.score = 0
         self.to_flip = []
         self.__check_all_directions()
-        self.is_legal = len(self.to_flip) > 0
+        self.__is_legal = len(self.to_flip) > 0
+
 
     def execute(self):
         self.__add()
@@ -60,3 +62,7 @@ class Action:
             self.board[i[0]][i[1]] = self.turn
 
 
+
+
+    def is_legal(self):
+        return self.__is_legal

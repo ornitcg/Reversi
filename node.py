@@ -2,13 +2,14 @@
 
 
 class Node:
-    def __init__(self, game_board, parent=None, action=None):
-        self.game_board = game_board  # Current game state
-        self.parent = parent  # Parent node
-        self.action = action  # Action that led to this state
-        self.children = []  # Child nodes
+    def __init__(self, board, parent=None, action=None):
+
+        self.board = board
+        self.parent = parent
+        self.action = action  # That led to this state
+        self.children = []  # list of  nodes
         self.value = None  # For minimax evaluation
-        self.type = None  # Type of node (e.g., MAX or MIN)
+        self.type = None  # MAX or MIN
 
     def expand(self):
         """Generate all possible child nodes from current state"""

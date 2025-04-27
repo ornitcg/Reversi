@@ -2,6 +2,7 @@ from game_board import *
 from state_space import *
 from argparse import *
 from min_max import *
+from transition_model import *
 
 
 def main():
@@ -12,7 +13,8 @@ def main():
     args = parser.parse_args()
 
     game_board = Game_Board()
-    state_space = State_Space(game_board)
+    transition_model = Transition_Model()
+    state_space = State_Space(game_board, transition_model)
     initial_state = state_space.get_initial_state()
     minmax = Min_Max(initial_state,  state_space)
 
