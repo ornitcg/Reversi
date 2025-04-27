@@ -2,26 +2,22 @@ from constants import *
 
 
 class Action:
-    def __init__(self, board, turn, x , y ):
+    def __init__(self,  turn, x , y ):
         self.turn = turn
-        self.board = board
         self.x = x-1
         self.y = y-1
-        self.score = 0
-        self.__pieces_to_flip = []
-        self.__check_all_directions()
-        self.__is_legal = len(self.__pieces_to_flip) > 0
 
 
-    def execute(self):
-        self.__add()
-        self.__flip()
+    def execute(self, board):
+        self.add(board)
+        self.flip(board)
 
     # add a new piece to the board on x,y
-    def __add(self):
-        self.board[self.x][self.y] = self.turn
+    def add(self, board):
+        board[self.x][self.y] = self.turn
 
-    def __check_all_directions(self):
+    def check_all_directions(self, board):
+        pieces_to_flip = []
         directions = [(LEFT,STAY),
                       (RIGHT,STAY),
                       (STAY,UP),
@@ -34,41 +30,37 @@ class Action:
         for direction in directions:
             horizontal_direction = direction[0]
             vertical_direction = direction[1]
-            self.__check_direction(horizontal_direction, vertical_direction)
+            self.check_direction(board, pieces_to_flip, horizontal_direction, vertical_direction)
+        return pieces_to_flip
 
 
-
-
-    def __check_direction(self, horizontal_direction, vertical_direction):
+    def check_direction(self,board, pieces_to_flip, horizontal_direction, vertical_direction):
         row = self.x
         col = self.y
         while row >= 0 and col >= 0 and row < SIDE_SIZE and col < SIDE_SIZE:
             row += vertical_direction
             col += horizontal_direction
-            if self.board[row][col] == self.turn:
+            if board[row][col] == self.turn:
                 break
-            elif self.board[row][col] == EMPTY:
+            elif board[row][col] == EMPTY:
                 break
             else:
-                self.__pieces_to_flip.append((row, col))
+                pieces_to_flip.append((row, col))
 
 
-    def __flip(self):
-        for i in self.__pieces_to_flip:
-            self.board[i[0]][i[1]] = self.turn
+    def flip(self, board, pieces_to_flip):
+        for i in pieces_to_flip:
+            board[i[0]][i[1]] = self.turn
 
 
+    def is_legal(self, board):
+        to_flip_list = self.check_all_directions(board)
+        if len(to_flip_list) > 0:
+           return True
 
-
-    def is_legal(self):
-        return self.__is_legal
-
-
-    def get_score(self):
-        return self.score
-
-    def get_pieces_to_flip(self):
-        return self.__pieces_to_flip
+    def get_score(self, board):
+        to_flip_list = self.check_all_directions(board)
+        return len(to_flip_list) + 1  #+1 for the newly (to be) added piece
 
     def get_position(self):
         return self.x, self.y
@@ -76,7 +68,5 @@ class Action:
     def get_turn(self):
         return self.turn
 
-    def get_board(self):
-        return self.board
 
 
