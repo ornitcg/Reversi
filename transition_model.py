@@ -42,7 +42,7 @@ class Transition_Model:
             for y in range(board_size):
                 if board[x][y] == EMPTY:
                     action = Action( player, x, y)
-                    if action.is_legal():
+                    if action.is_legal(board):
                         legal_moves.append(action)
         return legal_moves
 
