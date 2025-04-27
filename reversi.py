@@ -1,6 +1,7 @@
 from game_board import *
 from state_space import *
 from argparse import *
+from min_max import *
 
 
 def main():
@@ -9,7 +10,11 @@ def main():
     parser.add_argument('--methodical', type = int, metavar = 'n', help='Run a methodical game showing N first states')
     parser.add_argument('--ahead', type=int, default=None, help='Look ahead specified number of moves')
     args = parser.parse_args()
-    board = Game_Board()
+
+    game_board = Game_Board()
+    state_space = State_Space(game_board)
+    initial_state = state_space.get_initial_state()
+    minmax = Min_Max(initial_state,  state_space)
 
     if args.displayAllActions is not None:
         # Generate a board with this many disks and show all legal moves
@@ -19,13 +24,12 @@ def main():
         print(f"Running methodical game showing first {args.methodical} states")
         # Your implementation here
     elif args.ahead is not None:# Default behavior
-        board.display_board()
-        board.display_GUI_board(board.board)
+        game_board.display_board()
+        game_board.display_GUI_board(game_board.board)
 
-    # state_space = State_Space(board)
     # start_state = state_space.get_initial_state()
-    board.display_board()
-    board.display_GUI_board(board.board)
+    game_board.display_board()
+    game_board.display_GUI_board(game_board.board)
 
 if __name__ == "__main__":
     main()

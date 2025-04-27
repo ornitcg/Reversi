@@ -8,6 +8,7 @@ class Node:
         self.action = action  # Action that led to this state
         self.children = []  # Child nodes
         self.value = None  # For minimax evaluation
+        self.type = None  # Type of node (e.g., MAX or MIN)
 
     def expand(self):
         """Generate all possible child nodes from current state"""

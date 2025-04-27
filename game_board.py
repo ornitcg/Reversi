@@ -75,21 +75,12 @@ class Game_Board:
                         fill=FILL_COLOR_PLAYER2, outline=OUTLINE_COLOR
                     )
 
-        # # Add row and column labels  #TODO: Uncomment this if you want to add labels
-        # for i in range(rows):
-        #     canvas.create_text(
-        #         5, i * cell_size + cell_size // 2,
-        #         text=str(i), fill="white", anchor=W
-        #     )
-
-        # for j in range(cols):
-        #     canvas.create_text(
-        #         j * cell_size + cell_size // 2, 5,
-        #         text=str(j), fill="white", anchor=N
-        #     )
 
         # Start the GUI event loop
         root.mainloop()
+
+
+
 
 
 
