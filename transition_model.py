@@ -13,9 +13,6 @@ class Transition_Model:
         return new_board
 
 
-
-
-
     def get_next_player(self, current_player):
         return MIN if current_player == MAX else MAX
 
@@ -39,15 +36,15 @@ class Transition_Model:
 
     # creates list of optional moves for a given player
     def get_legal_moves(self, board, player):
-        from action import Action
         legal_moves = []
         board_size = len(board)
         for x in range(board_size):
             for y in range(board_size):
                 if board[x][y] == EMPTY:
-                    action = Action(copy.deepcopy(board), player, x, y)
+                    action = Action( player, x, y)
                     if action.is_legal():
                         legal_moves.append(action)
+        return legal_moves
 
 
 
@@ -60,6 +57,7 @@ class Transition_Model:
             return MIN
         else:
             return TIE
+
 
     # checks counts for each player
     def count_pieces(self, board):
