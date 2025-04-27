@@ -4,8 +4,8 @@ from constants import *
 class Action:
     def __init__(self,  turn, x , y ):
         self.turn = turn
-        self.x = x-1
-        self.y = y-1
+        self.x = x
+        self.y = y
 
 
     def apply(self, board):
@@ -57,6 +57,7 @@ class Action:
         to_flip_list = self.check_all_directions(board)
         if len(to_flip_list) > 0:
            return True
+        return False
 
     def get_score(self, board):
         to_flip_list = self.check_all_directions(board)
