@@ -18,7 +18,7 @@ class Transition_Model:
         turn = action.get_turn()
         board[y][x] = turn    # place the new piece
         pieces_to_flip = self.check_all_directions(node, action)
-        self.flip(board, pieces_to_flip)
+        self.__flip(board,turn, pieces_to_flip)
         value = len(pieces_to_flip) + 1  # +1 for the new piece
         neighbor = Node(board, node, action, self.get_next_player(turn), value)  #parent is the current node, action is the action taken to get to this state, and turn is the next player
         return  neighbor
@@ -67,9 +67,7 @@ class Transition_Model:
 
 
 
-    def flip(self, node, pieces_to_flip):
-        board = node.get_board()
-        turn = node.get_turn()
+    def __flip(self, board, turn, pieces_to_flip):
         for i in pieces_to_flip:
             board[i[0]][i[1]] = turn
 
