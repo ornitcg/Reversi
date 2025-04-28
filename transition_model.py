@@ -5,12 +5,90 @@ import copy
 
 
 class Transition_Model:
-    def __init__(self):
-        pass
 
-    def get_neighbor(self, new_board, action):
-        action.apply(new_board)
-        return new_board
+    def is_legal(self, board):
+        to_flip_list = self.check_all_directions(board)
+        if len(to_flip_list) > 0:
+           return True
+        return False
+
+    def apply_action(self, node , action):
+        board = node.get_board().deepcopy()
+        y,x  = action.get_position()
+        turn = action.get_turn()
+        board[y][x] = turn    # place the new piece
+        pieces_to_flip = self.check_all_directions(node, action)
+        self.flip(board, pieces_to_flip)
+        value = len(pieces_to_flip) + 1  # +1 for the new piece
+        neighbor = Node(board, node, action, self.get_next_player(turn), value)  #parent is the current node, action is the action taken to get to this state, and turn is the next player
+        return  neighbor
+
+    def skip_turn(self, node):
+        turn = node.get_turn()
+        new_board = copy.deepcopy(node.get_board())
+        neighbor = Node(new_board, node, None, self.get_next_player(turn), 0)
+        return neighbor
+
+    def check_all_directions(self, node, action):
+        pieces_to_flip = []
+        directions = [(LEFT,STAY),
+                      (RIGHT,STAY),
+                      (STAY,UP),
+                      (STAY,DOWN),
+                      (RIGHT,UP),
+                      (LEFT,DOWN),
+                      (LEFT,UP),
+                      (RIGHT,DOWN)]
+
+        for direction in directions:
+            horizontal_direction = direction[0]
+            vertical_direction = direction[1]
+            self.check_a_direction(node, action, pieces_to_flip, horizontal_direction, vertical_direction)
+        return pieces_to_flip
+
+
+
+
+
+    def check_a_direction(self, node, action, pieces_to_flip, horizontal_direction, vertical_direction):
+        row, col = action.get_position()
+        turn = node.get_turn()
+        board = node.get_board()
+        while row >= 0 and col >= 0 and row < SIDE_SIZE and col < SIDE_SIZE:
+            row += vertical_direction
+            col += horizontal_direction
+            if board[row][col] == turn:
+                break
+            elif board[row][col] == EMPTY:
+                break
+            else:
+                pieces_to_flip.append((row, col))
+
+
+
+
+    def flip(self, node, pieces_to_flip):
+        board = node.get_board()
+        turn = node.get_turn()
+        for i in pieces_to_flip:
+            board[i[0]][i[1]] = turn
+
+
+
+
+
+
+    def expand_node(self, node):
+        board = node.get_board()
+        current_player = node.get_type()
+        legal_moves = self.get_legal_moves(board, current_player)
+        children = []
+        for action, score in legal_moves:
+            new_board = copy.deepcopy(board)
+            new_board = self.get_neighbor(new_board, action)
+            child_node = Node(new_board, node, action, self.get_next_player(current_player))
+            children.append(child_node)
+        return children
 
 
     def get_next_player(self, current_player):
@@ -43,24 +121,12 @@ class Transition_Model:
                 if board[x][y] == EMPTY:
                     action = Action( player, x, y)
                     if action.is_legal(board):
-                        legal_moves.append(action)
+                        score = action.get_score(board)
+                        legal_moves.append((action,score))  #tuple of action and score
         return legal_moves
 
 
 
-    # compares counts of both players and returns the winner
-    def utility(self, board):
-        max_pieces , min_pieces = self.count_pieces(board)
-        if max_pieces > min_pieces:
-            return MAX
-        elif min_pieces > max_pieces:
-            return MIN
-        else:
-            return TIE
 
 
-    # checks counts for each player
-    def count_pieces(self, board):
-        max_pieces = sum(row.count(MAX) for row in board)
-        min_pieces = sum(row.count(MIN) for row in board)
-        return max_pieces, min_pieces
+

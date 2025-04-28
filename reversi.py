@@ -23,6 +23,7 @@ def main():
     if args.displayAllActions is not None:
         # Generate a board with this many disks and show all legal moves
         print(f"Displaying all actions for board with {args.displayAllActions} disks")
+
         # Your implementation here
     elif args.methodical is not None:
         print(f"Running methodical game showing first {args.methodical} states")
