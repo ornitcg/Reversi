@@ -43,27 +43,36 @@ class Transition_Model:
         for direction in directions:
             horizontal_direction = direction[0]
             vertical_direction = direction[1]
-            self.check_a_direction(node, action, pieces_to_flip, horizontal_direction, vertical_direction)
+            pieces_to_flip.extend(self.check_a_direction(node, action, horizontal_direction, vertical_direction))
         return pieces_to_flip
 
 
 
 
 
-    def check_a_direction(self, node, action, pieces_to_flip, horizontal_direction, vertical_direction):
+    def check_a_direction(self, node, action, horizontal_direction, vertical_direction):
         row, col = action.get_position()
         turn = node.get_turn()
         board = node.get_board()
+        opponent = MIN if turn == MAX else MAX
+        pieces_to_flip = []
+        sandwich = False
         while row >= 0 and col >= 0 and row < SIDE_SIZE and col < SIDE_SIZE:
             row += vertical_direction
             col += horizontal_direction
-            if board[row][col] == turn:
+            if board[row][col] == EMPTY:
                 break
-            elif board[row][col] == EMPTY:
-                break
-            else:
+            if board[row][col] == opponent:
                 pieces_to_flip.append((row, col))
-
+            if board[row][col] == turn:
+                if len(pieces_to_flip) > 0:
+                    sandwich = True
+                else:
+                    break
+        if sandwich:
+            return pieces_to_flip
+        else:
+            return []
 
 
 
