@@ -6,28 +6,28 @@ import copy
 
 class Transition_Model:
 
-    def is_legal(self, board):
-        to_flip_list = self.check_all_directions(board)
+    def is_legal(self, node, action):
+        to_flip_list = self.check_all_directions(node, action)
         if len(to_flip_list) > 0:
            return True
         return False
 
     def apply_action(self, node , action):
-        board = node.get_board().deepcopy()
+        board = copy.deepcopy(node.get_board())
         y,x  = action.get_position()
         turn = action.get_turn()
         board[y][x] = turn    # place the new piece
         pieces_to_flip = self.check_all_directions(node, action)
         self.__flip(board,turn, pieces_to_flip)
         value = len(pieces_to_flip) + 1  # +1 for the new piece
-        neighbor = Node(board, node, action, self.get_next_player(turn), value)  #parent is the current node, action is the action taken to get to this state, and turn is the next player
-        return  neighbor
+        successor = Node(board, node, action, self.get_next_player(turn), value)  #parent is the current node, action is the action taken to get to this state, and turn is the next player
+        return  successor
 
     def skip_turn(self, node):
         turn = node.get_turn()
         new_board = copy.deepcopy(node.get_board())
-        neighbor = Node(new_board, node, None, self.get_next_player(turn), 0)
-        return neighbor
+        successor = Node(new_board, node, None, self.get_next_player(turn), 0)
+        return successor
 
     def check_all_directions(self, node, action):
         pieces_to_flip = []
@@ -57,9 +57,9 @@ class Transition_Model:
         opponent = MIN if turn == MAX else MAX
         pieces_to_flip = []
         sandwich = False
+        row += vertical_direction
+        col += horizontal_direction
         while row >= 0 and col >= 0 and row < SIDE_SIZE and col < SIDE_SIZE:
-            row += vertical_direction
-            col += horizontal_direction
             if board[row][col] == EMPTY:
                 break
             if board[row][col] == opponent:
@@ -69,6 +69,9 @@ class Transition_Model:
                     sandwich = True
                 else:
                     break
+            row += vertical_direction
+            col += horizontal_direction
+
         if sandwich:
             return pieces_to_flip
         else:

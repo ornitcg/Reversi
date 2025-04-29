@@ -4,6 +4,7 @@ from argparse import *
 from min_max import *
 from transition_model import *
 from heuristic import *
+from game_basic_algorithm import *
 
 
 def main():
@@ -13,12 +14,13 @@ def main():
     parser.add_argument('--ahead', type=int, default=None, help='Look ahead specified number of moves')
     args = parser.parse_args()
 
-    transition_model = Transition_Model()
-    state_space = State_Space( transition_model, SIDE_SIZE)
+    state_space = State_Space( Transition_Model(), SIDE_SIZE)
     initial_state = state_space.get_initial_state()
-    heuristic = Heuristic()
-    minmax = Min_Max(initial_state,  state_space) # default depth is 1 ,default player is MAX, default heuristic is None
-    minmax.play()
+    game = Game_Basic_Algorithm(state_space, initial_state)
+    game.play(initial_state, TURN_RED)  #start with red player
+    # heuristic = Heuristic()
+    # minmax = Min_Max(initial_state,  state_space) # default depth is 1 ,default player is MAX, default heuristic is None
+    # minmax.play()
 
     if args.displayAllActions is not None:
         # Generate a board with this many disks and show all legal moves

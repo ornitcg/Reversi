@@ -7,8 +7,9 @@ from transition_model import *
 
 class State_Space:
     def __init__(self,  transition_model=None, board_side_size=SIDE_SIZE):
-        self.initial_state = self.set_initial_state(board_side_size)
-        self.transition_model = transition_model
+        self.__initial_state = None
+        self.set_initial_state(board_side_size)
+        self.__transition_model = transition_model
 
     def set_initial_state(self, size):
         board = []
@@ -22,16 +23,15 @@ class State_Space:
         board[MIDDLE-1][MIDDLE] = TURN_WHITE
         board[MIDDLE][MIDDLE-1] = TURN_WHITE
         board[MIDDLE][MIDDLE] = TURN_RED
+        self.__initial_state = Node(board, turn=TURN_RED,value= 0)
 
-        return Node(board, MAX, value= 0)
-
-        # compares counts of both players and returns the winner
 
     def get_initial_state(self):
-        return self.initial_state
+        return self.__initial_state
 
-    def get_legal_actions(self, board, turn):
+    def get_legal_actions(self, node, turn):
         legal_actions = []  #list of action objects
+        board = node.get_board()
         board_size = len(board)
 
         # Check each empty cell for a legal move
@@ -39,7 +39,7 @@ class State_Space:
             for col in range(board_size):
                 if board[row][col] == EMPTY:
                     action = Action(turn, col, row)
-                    if self.transition_model.is_legal(board, action):
+                    if self.__transition_model.is_legal(node, action):
                         legal_actions.append(action)
         return legal_actions
 
@@ -52,23 +52,23 @@ class State_Space:
             return True
 
         # check if current player has legal moves, and if opponent has no legal moves
-        has_current_player_moves = self.get_legal_actions(board, current_player)
+        has_current_player_moves = self.get_legal_actions(node, current_player)
         if not has_current_player_moves:
             opponent = MIN if current_player == MAX else MAX
-            has_opponent_moves = self.get_legal_actions(board, opponent)
+            has_opponent_moves = self.get_legal_actions(node, opponent)
             return not has_opponent_moves
 
-    def get_neighbor(self, node, action):
-        return self.transition_model.apply_action(node, action)
+    def get_successor(self, node, action):
+        return self.__transition_model.apply_action(node, action)
 
-    def get_neighbors(self, node):
-        neighbors = []
+    def get_sucessors(self, node):
+        successors = []
         board = node.get_board()
         current_player = node.get_turn()
-        legal_moves = self.get_legal_actions(board, current_player)
+        legal_moves = self.get_legal_actions(node, current_player)
         for action in legal_moves:
-            neighbors.append(self.get_neighbor(node, action))
-        return neighbors
+            successors.append(self.get_successor(node, action))
+        return successors
 
 
 
