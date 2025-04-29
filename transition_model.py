@@ -7,8 +7,8 @@ import copy
 class Transition_Model:
 
     def is_legal(self, node, action):
-        to_flip_list = self.check_all_directions(node, action)
-        if len(to_flip_list) > 0:
+        found_to_flip = self.check_all_directions(node, action)
+        if found_to_flip:
            return True
         return False
 

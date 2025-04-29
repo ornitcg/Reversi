@@ -39,7 +39,8 @@ class State_Space:
             for col in range(board_size):
                 if board[row][col] == EMPTY:
                     action = Action(turn, col, row)
-                    if self.__transition_model.is_legal(node, action):
+                    is_legal = self.__transition_model.is_legal(node, action)
+                    if is_legal:
                         legal_actions.append(action)
         return legal_actions
 

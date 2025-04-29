@@ -33,7 +33,7 @@ class Game_Basic_Algorithm:
             if self.state_space.is_goal_state(current_node):
                 print("Game Over")
                 break
-            legal_moves = self.state_space.get_legal_actions(current_node, turn)
+            legal_moves = self.state_space.get_legal_actions(current_node, current_node.get_turn())
             if not legal_moves:
                 skipped_turns += 1
                 turn = self.state_space.__transition_model.get_next_player()
