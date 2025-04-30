@@ -28,7 +28,7 @@ class Game_Basic_Algorithm:
 
             game_board.display_GUI_board(current_node.get_board())
             game_board.display_textual_board(current_node.get_board())
-            time.sleep(1)  # Delay for 1 second
+            time.sleep(0.5)  # Delay for 1 second
 
             if self.state_space.is_goal_state(current_node):
                 print("Game Over")
