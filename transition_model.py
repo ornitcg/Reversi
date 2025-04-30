@@ -121,22 +121,6 @@ class Transition_Model:
         successor = Node(new_board, node, None, self.get_next_player(current_player), 0)
         return successor
 
-
-    def is_terminal_state(self, board, current_player):
-        # check is any empty cells are left
-        empty_cells = sum(row.count(EMPTY) for row in board)
-        if empty_cells == 0:
-            return True
-
-        # check if current player has legal moves, and if opponent has no legal moves
-        has_current_player_moves = self.get_legal_moves(board, current_player)
-        if not has_current_player_moves:
-            opponent = MIN if current_player == MAX else MAX
-            has_opponent_moves = self.get_legal_moves(board, opponent)
-            return not has_opponent_moves  #game over if opponent has no moves
-
-        return False
-
     def get_legal_moves(self, node):
         legal_actions = []  #list of action objects
         board = node.get_board()
@@ -151,25 +135,6 @@ class Transition_Model:
                     if is_legal:
                         legal_actions.append(action)
         return legal_actions
-
-
-    # creates list of optional moves for a given player
-    # def get_legal_moves(self, node):
-    #     legal_moves = []
-    #     board = node.get_board()
-    #     player = node.get_turn()
-    #     board_size = len(board)
-    #     for x in range(board_size):
-    #         for y in range(board_size):
-    #             if board[x][y] == EMPTY:
-    #                 action = Action( player, x, y)
-    #                 if self.is_legal(node,action):
-    #                     score = self.get_score(node, action)
-    #                     legal_moves.append((action,score))  #tuple of action and score
-    #     return legal_moves
-
-
-
 
 
     def get_score(self, node, action):
