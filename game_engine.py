@@ -8,6 +8,8 @@ import time
 
 class Game_Engine:
     def __init__(self,  players , start_node = None):
+        self.game_board = Game_Board()
+        self.game_board.initialize_GUI()
         self.transition_model = Transition_Model(players)
         self.state_space = State_Space(players, self.transition_model)
         self.player_red = players[0]
@@ -18,8 +20,6 @@ class Game_Engine:
             self.initial_state = self.state_space.get_initial_state()
 
     def play(self, max_disks=None):
-        game_board = Game_Board()
-        game_board.initialize_GUI()
 
         current_node = self.initial_state
         current_player = current_node.get_turn()
@@ -27,15 +27,11 @@ class Game_Engine:
         skipped_turns = 0  # count of skipped turns. if both players skip, no legal moves exist for anyone and game is over
         while skipped_turns < 2 :
 
-            game_board.display_graphic_board(current_node.get_board())
-            game_board.display_textual_board(current_node.get_board())
+            self.game_board.display_graphic_board(current_node.get_board())
+            self.game_board.display_textual_board(current_node.get_board())
             time.sleep(0.5)  # Delay for 1 second
 
-            legal_moves = self.transition_model.get_legal_moves(current_node)
-            board_with_legal = self.transition_model.mark_legal_actions(current_node, legal_moves)
-            game_board.display_graphic_board(board_with_legal, current_player)
-            game_board.display_textual_board(board_with_legal)
-            time.sleep(0.5)  # Delay for 1 second
+            self.display_legal_moves( current_node)
 
             if current_node.get_total_count() == max_disks:
                 time.sleep(5)
@@ -60,3 +56,9 @@ class Game_Engine:
 
 
 
+    def display_legal_moves(self, current_node):
+        legal_moves = self.transition_model.get_legal_moves(current_node)
+        board_with_legal = self.transition_model.mark_legal_actions(current_node, legal_moves)
+        self.game_board.display_graphic_board(board_with_legal, current_node.get_turn())
+        self.game_board.display_textual_board(board_with_legal)
+        time.sleep(0.5)  # Delay for 1 second
