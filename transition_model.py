@@ -5,29 +5,40 @@ import copy
 
 
 class Transition_Model:
+    def __init__(self, players):
+        self.players = players
+        self.player1 = players[0]
+        self.player2 = players[1]
+
+
+    def apply_action(self, node , action):
+        if action.get_type() == SKIP:
+            return self.skip_turn(node)
+
+        elif action.get_type() == ADD:
+            board = copy.deepcopy(node.get_board())
+            y,x  = action.get_position()
+            current_player = node.get_turn()
+            board[y][x] = current_player.get_color()    # place the new piece
+            pieces_to_flip = self.check_all_directions(node, action)
+            self.__flip(board, current_player , pieces_to_flip)
+            value = len(pieces_to_flip) + 1  # +1 for the new piece
+            successor = Node(board, node, action, self.get_next_player(current_player), value)  #parent is the current node, action is the action taken to get to this state, and turn is the next player
+            return  successor
+
+    def skip_turn(self, node):
+        current_player = node.get_turn()
+        new_board = copy.deepcopy(node.get_board())
+        successor = Node(new_board, node, None, self.get_next_player(current_player), 0)
+        return successor
+
+
 
     def is_legal(self, node, action):
         found_to_flip = self.check_all_directions(node, action)
         if found_to_flip:
            return True
         return False
-
-    def apply_action(self, node , action):
-        board = copy.deepcopy(node.get_board())
-        y,x  = action.get_position()
-        turn = action.get_turn()
-        board[y][x] = turn    # place the new piece
-        pieces_to_flip = self.check_all_directions(node, action)
-        self.__flip(board,turn, pieces_to_flip)
-        value = len(pieces_to_flip) + 1  # +1 for the new piece
-        successor = Node(board, node, action, self.get_next_player(turn), value)  #parent is the current node, action is the action taken to get to this state, and turn is the next player
-        return  successor
-
-    def skip_turn(self, node):
-        turn = node.get_turn()
-        new_board = copy.deepcopy(node.get_board())
-        successor = Node(new_board, node, None, self.get_next_player(turn), 0)
-        return successor
 
     def check_all_directions(self, node, action):
         pieces_to_flip = []
@@ -52,9 +63,9 @@ class Transition_Model:
 
     def check_a_direction(self, node, action, horizontal_direction, vertical_direction):
         row, col = action.get_position()
-        turn = node.get_turn()
+        current_player = node.get_turn()
+        current_player_color = current_player.get_color()
         board = node.get_board()
-        opponent = MIN if turn == MAX else MAX
         pieces_to_flip = []
         sandwich = False
         row += vertical_direction
@@ -62,13 +73,13 @@ class Transition_Model:
         while row >= 0 and col >= 0 and row < SIDE_SIZE and col < SIDE_SIZE:
             if board[row][col] == EMPTY:
                 break
-            if board[row][col] == opponent:
+            if board[row][col] is not current_player_color:
                 pieces_to_flip.append((row, col))
-            if board[row][col] == turn:
+            if board[row][col] == current_player_color:
                 if len(pieces_to_flip) > 0:
                     sandwich = True
-                else:
-                    break
+                break
+
             row += vertical_direction
             col += horizontal_direction
 
@@ -79,9 +90,9 @@ class Transition_Model:
 
 
 
-    def __flip(self, board, turn, pieces_to_flip):
+    def __flip(self, board, current_player, pieces_to_flip):
         for i in pieces_to_flip:
-            board[i[0]][i[1]] = turn
+            board[i[0]][i[1]] = current_player.get_color()
 
 
 
@@ -102,7 +113,13 @@ class Transition_Model:
 
 
     def get_next_player(self, current_player):
-        return MIN if current_player == MAX else MAX
+        return self.player1 if current_player == self.player2 else self.player2
+
+    def skip_turn(self, node, player):
+        current_player = node.get_turn()
+        new_board = copy.deepcopy(node.get_board())
+        successor = Node(new_board, node, None, self.get_next_player(current_player), 0)
+        return successor
 
 
     def is_terminal_state(self, board, current_player):
@@ -120,23 +137,42 @@ class Transition_Model:
 
         return False
 
+    def get_legal_moves(self, node):
+        legal_actions = []  #list of action objects
+        board = node.get_board()
+        board_size = len(board)
+
+        # Check each empty cell for a legal move
+        for row in range(board_size):
+            for col in range(board_size):
+                if board[row][col] == EMPTY:
+                    action = Action(ADD, col, row)
+                    is_legal = self.is_legal(node, action)
+                    if is_legal:
+                        legal_actions.append(action)
+        return legal_actions
 
 
     # creates list of optional moves for a given player
-    def get_legal_moves(self, board, player):
-        legal_moves = []
-        board_size = len(board)
-        for x in range(board_size):
-            for y in range(board_size):
-                if board[x][y] == EMPTY:
-                    action = Action( player, x, y)
-                    if action.is_legal(board):
-                        score = action.get_score(board)
-                        legal_moves.append((action,score))  #tuple of action and score
-        return legal_moves
+    # def get_legal_moves(self, node):
+    #     legal_moves = []
+    #     board = node.get_board()
+    #     player = node.get_turn()
+    #     board_size = len(board)
+    #     for x in range(board_size):
+    #         for y in range(board_size):
+    #             if board[x][y] == EMPTY:
+    #                 action = Action( player, x, y)
+    #                 if self.is_legal(node,action):
+    #                     score = self.get_score(node, action)
+    #                     legal_moves.append((action,score))  #tuple of action and score
+    #     return legal_moves
 
 
 
 
 
-
+    def get_score(self, node, action):
+        # Calculate the score based on the number of pieces flipped
+        pieces_to_flip = self.check_all_directions(node, action)
+        return len(pieces_to_flip) + 1

@@ -4,7 +4,9 @@ from argparse import *
 from min_max import *
 from transition_model import *
 from heuristic import *
-from game_basic_algorithm import *
+from game_engine import *
+from constants import *
+from simple_player import *
 
 
 def main():
@@ -14,10 +16,15 @@ def main():
     parser.add_argument('--ahead', type=int, default=None, help='Look ahead specified number of moves')
     args = parser.parse_args()
 
-    state_space = State_Space( Transition_Model(), SIDE_SIZE)
-    initial_state = state_space.get_initial_state()
-    game = Game_Basic_Algorithm(state_space, initial_state)
-    game.play(initial_state, TURN_RED)  #start with red player
+
+    # Initialize players
+    player_red = Simple_Player(RED)
+    player_white = Simple_Player(WHITE)
+    players = [player_red, player_white]
+    game = Game_Engine(players)
+    game.play()
+
+
     # heuristic = Heuristic()
     # minmax = Min_Max(initial_state,  state_space) # default depth is 1 ,default player is MAX, default heuristic is None
     # minmax.play()

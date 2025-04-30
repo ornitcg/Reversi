@@ -6,12 +6,15 @@ from transition_model import *
 
 
 class State_Space:
-    def __init__(self,  transition_model=None, board_side_size=SIDE_SIZE):
-        self.__initial_state = None
-        self.set_initial_state(board_side_size)
-        self.__transition_model = transition_model
+    def __init__(self, players, transition_model=None, board_side_size=SIDE_SIZE ):
+        self.players = players
+        self.initial_state = None
+        self.set_initial_state(board_side_size, players[0]) # RED is always first
+        self.transition_model = transition_model
 
-    def set_initial_state(self, size):
+
+
+    def set_initial_state(self, size, starting_player):
         board = []
         for i in range(size):
             row = []
@@ -19,30 +22,16 @@ class State_Space:
                 row.append(EMPTY)
             board.append(row)
 
-        board[MIDDLE-1][MIDDLE-1] = TURN_RED
-        board[MIDDLE-1][MIDDLE] = TURN_WHITE
-        board[MIDDLE][MIDDLE-1] = TURN_WHITE
-        board[MIDDLE][MIDDLE] = TURN_RED
-        self.__initial_state = Node(board, turn=TURN_RED,value= 0)
+        board[MIDDLE-1][MIDDLE-1] = RED
+        board[MIDDLE-1][MIDDLE] = WHITE
+        board[MIDDLE][MIDDLE-1] = WHITE
+        board[MIDDLE][MIDDLE] = RED
+        self.initial_state = Node(board, turn=starting_player, value= 0)
 
 
     def get_initial_state(self):
-        return self.__initial_state
+        return self.initial_state
 
-    def get_legal_actions(self, node, turn):
-        legal_actions = []  #list of action objects
-        board = node.get_board()
-        board_size = len(board)
-
-        # Check each empty cell for a legal move
-        for row in range(board_size):
-            for col in range(board_size):
-                if board[row][col] == EMPTY:
-                    action = Action(turn, col, row)
-                    is_legal = self.__transition_model.is_legal(node, action)
-                    if is_legal:
-                        legal_actions.append(action)
-        return legal_actions
 
     def is_goal_state(self, node):
         board = node.get_board()
@@ -53,20 +42,21 @@ class State_Space:
             return True
 
         # check if current player has legal moves, and if opponent has no legal moves
-        has_current_player_moves = self.get_legal_actions(node, current_player)
+        has_current_player_moves = self.transition_model.get_legal_moves(node)
         if not has_current_player_moves:
-            opponent = MIN if current_player == MAX else MAX
-            has_opponent_moves = self.get_legal_actions(node, opponent)
+            opponent = self.transition_model.get_next_player(current_player)
+            node_as_opponent = Node(board, turn=opponent, value=0)
+            has_opponent_moves = self.transition_model.get_legal_moves(node_as_opponent)
             return not has_opponent_moves
 
     def get_successor(self, node, action):
-        return self.__transition_model.apply_action(node, action)
+        return self.transition_model.apply_action(node, action)
 
     def get_sucessors(self, node):
         successors = []
         board = node.get_board()
         current_player = node.get_turn()
-        legal_moves = self.get_legal_actions(node, current_player)
+        legal_moves = self.transition_model.get_legal_moves(node)
         for action in legal_moves:
             successors.append(self.get_successor(node, action))
         return successors

@@ -21,4 +21,4 @@ class Min_Max:
             return self.state_space.utility(current_board)
 
         turn = self.state_space.get_next_player(current_player)
-        children = self.state_space.__transition_model.expand_node(state)
+        children = self.state_space.transition_model.expand_node(state)

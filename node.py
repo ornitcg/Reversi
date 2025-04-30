@@ -8,7 +8,7 @@ class Node:
         self.action = action  # That led to this state
         self.children = []  # list of  nodes
         self.value = None  # For minimax evaluation
-        self.turn = turn  # Red or White # who should play an action on this node
+        self.turn = turn  # player Red or White # who should play an action on this node
         self.red_count = 0
         self.white_count = 0
 

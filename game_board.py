@@ -57,13 +57,13 @@ class Game_Board:
 
                 # Draw the cells content based on cells values
                 cell_value = board[row][col]
-                if cell_value == TURN_RED:
+                if cell_value == RED:
                     self.canvas.create_oval(
                         x1 + PADDING, y1 + PADDING,
                         x2 - PADDING, y2 - PADDING,
                         fill=FILL_COLOR_PLAYER1
                     )
-                elif cell_value == TURN_WHITE:  # Player 2 (white)
+                elif cell_value == WHITE:  # Player 2 (white)
                     self.canvas.create_oval(
                         x1 + PADDING, y1 + PADDING,
                         x2 - PADDING, y2 - PADDING,
