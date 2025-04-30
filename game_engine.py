@@ -29,9 +29,16 @@ class Game_Engine:
 
             self.game_board.display_graphic_board(current_node.get_board())
             self.game_board.display_textual_board(current_node.get_board())
+            print('\n')
             time.sleep(0.5)  # Delay for 1 second
 
-            self.display_legal_moves( current_node)
+            legal_moves = self.transition_model.get_legal_moves(current_node)
+            self.display_legal_moves( current_node, legal_moves)
+
+            if max_disks is not None:
+                if current_node.get_total_count() == max_disks:
+                    self.legal_moves_output(current_node, legal_moves)
+                    break
 
             if current_node.get_total_count() == max_disks:
                 time.sleep(5)
@@ -56,9 +63,26 @@ class Game_Engine:
 
 
 
-    def display_legal_moves(self, current_node):
-        legal_moves = self.transition_model.get_legal_moves(current_node)
+    def display_legal_moves(self, current_node, legal_moves):
         board_with_legal = self.transition_model.mark_legal_actions(current_node, legal_moves)
         self.game_board.display_graphic_board(board_with_legal, current_node.get_turn())
-        self.game_board.display_textual_board(board_with_legal)
+        # self.game_board.display_textual_board(board_with_legal)
         time.sleep(0.5)  # Delay for 1 second
+
+
+
+    def legal_moves_output(self, current_node, legal_moves):
+        print("********* Display all actions: ***************")
+        print("Player 1 - X (red) , Player 2 - O (white)")
+
+        for action in legal_moves:
+            successor_node = self.state_space.get_successor(current_node, action)
+            print("\nState number: ", current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS)
+            self.game_board.display_textual_board(current_node.get_board())
+
+            print(f"State number: {successor_node.get_total_count() - NUMBER_OF_INITIAL_DISKS}", end=' ')
+
+            print(f"\nPlayer {current_node.get_turn().get_color()} moved, Action ADD{action.get_position()}")
+            self.game_board.display_textual_board(successor_node.get_board())
+            #print each player's disks
+            print(f"Result: Player X:{successor_node.get_red_count()} disks ,Player O: {successor_node.get_white_count()} disks. Total disks = {successor_node.get_total_count()}")

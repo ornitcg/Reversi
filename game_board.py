@@ -36,8 +36,6 @@ class Game_Board:
             for i in range(SIDE_SIZE):
                 print(row[i], end=' ')
             print()
-        print('\n\n')
-
 
 
     def display_graphic_board(self, board, player=None):

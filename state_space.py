@@ -52,11 +52,11 @@ class State_Space:
     def get_successor(self, node, action):
         return self.transition_model.apply_action(node, action)
 
-    def get_sucessors(self, node):
+    def get_successors(self, node, legal_moves):
         successors = []
         board = node.get_board()
         current_player = node.get_turn()
-        legal_moves = self.transition_model.get_legal_moves(node)
+        # legal_moves = self.transition_model.get_legal_moves(node)
         for action in legal_moves:
             successors.append(self.get_successor(node, action))
         return successors

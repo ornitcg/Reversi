@@ -35,6 +35,7 @@ def main():
     # minmax.play()
 
     if args.displayAllActions is not None:
+
         max_disks = args.displayAllActions
         player_red = Simple_Player(RED)
         player_white = Simple_Player(WHITE)
@@ -42,7 +43,6 @@ def main():
         game = Game_Engine(players)
         game.play(max_disks=max_disks)
         # Generate a board with this many disks and show all legal moves
-        print(f"Displaying all actions for board with {args.displayAllActions} disks")
 
         # Your implementation here
     elif args.methodical is not None:
