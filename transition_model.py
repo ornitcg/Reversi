@@ -141,3 +141,11 @@ class Transition_Model:
         # Calculate the score based on the number of pieces flipped
         pieces_to_flip = self.check_all_directions(node, action)
         return len(pieces_to_flip) + 1
+
+
+    def mark_legal_actions(self, node, legal_moves):
+        board = copy.deepcopy(node.get_board())
+        for action in legal_moves:
+            row, col = action.get_position()
+            board[row][col] = LEGAL
+        return board

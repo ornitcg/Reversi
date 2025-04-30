@@ -1,5 +1,10 @@
 from constants import *
 from tkinter import *
+import copy
+from action import Action
+import time
+from player import *
+from simple_player import *
 
 class Game_Board:
     def __init__(self, size = SIDE_SIZE):
@@ -35,13 +40,17 @@ class Game_Board:
 
 
 
-    def display_GUI_board(self, board):
+    def display_graphic_board(self, board, player=None):
         if self.canvas is None or self.root is None:
             self.initialize_GUI()
 
         self.canvas.delete("all")  # Clear the canvas before redrawing
 
-
+        if player is not None:
+            if  player.get_color() == RED:
+                player_color = "red"
+            else:
+                player_color = "white"
 
         # Draw the grid and pieces
         for row in range(self.rows):
@@ -68,6 +77,12 @@ class Game_Board:
                         x1 + PADDING, y1 + PADDING,
                         x2 - PADDING, y2 - PADDING,
                         fill=FILL_COLOR_PLAYER2, outline=OUTLINE_COLOR
+                    )
+                elif cell_value == LEGAL:
+                    self.canvas.create_oval(
+                        x1 + LEGAL_PADDING, y1 + LEGAL_PADDING,
+                        x2 - LEGAL_PADDING, y2 - LEGAL_PADDING,
+                        fill = BACKGROUND_COLOR  , outline=player_color, width=5
                     )
 
         self.root.update_idletasks()

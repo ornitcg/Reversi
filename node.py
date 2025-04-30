@@ -1,4 +1,4 @@
-
+from constants import *
 
 
 class Node:
@@ -9,8 +9,8 @@ class Node:
         self.children = []  # list of  nodes
         self.value = None  # For minimax evaluation
         self.turn = turn  # player Red or White # who should play an action on this node
-        self.red_count = 0
-        self.white_count = 0
+        self.red_count = sum(row.count(RED) for row in board)
+        self.white_count = sum(row.count(WHITE) for row in board)
 
 
     #getters

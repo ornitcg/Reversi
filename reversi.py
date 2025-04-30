@@ -18,18 +18,29 @@ def main():
 
 
     # Initialize players
-    player_red = Simple_Player(RED)
-    player_white = Simple_Player(WHITE)
-    players = [player_red, player_white]
-    game = Game_Engine(players)
-    game.play()
-
+    # player_red = Simple_Player(RED)
+    # player_white = Simple_Player(WHITE)
+    # players = [player_red, player_white]
+    # game = Game_Engine(players)
+    # game.play()
+    # max_disks = 7
+    # player_red = Simple_Player(RED)
+    # player_white = Simple_Player(WHITE)
+    # players = [player_red, player_white]
+    # game = Game_Engine(players)
+    # game.play(max_disks=max_disks)
 
     # heuristic = Heuristic()
     # minmax = Min_Max(initial_state,  state_space) # default depth is 1 ,default player is MAX, default heuristic is None
     # minmax.play()
 
     if args.displayAllActions is not None:
+        max_disks = args.displayAllActions
+        player_red = Simple_Player(RED)
+        player_white = Simple_Player(WHITE)
+        players = [player_red, player_white]
+        game = Game_Engine(players)
+        game.play(max_disks=max_disks)
         # Generate a board with this many disks and show all legal moves
         print(f"Displaying all actions for board with {args.displayAllActions} disks")
 

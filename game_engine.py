@@ -17,7 +17,7 @@ class Game_Engine:
         else:
             self.initial_state = self.state_space.get_initial_state()
 
-    def play(self):
+    def play(self, max_disks=None):
         game_board = Game_Board()
         game_board.initialize_GUI()
 
@@ -27,9 +27,20 @@ class Game_Engine:
         skipped_turns = 0  # count of skipped turns. if both players skip, no legal moves exist for anyone and game is over
         while skipped_turns < 2 :
 
-            game_board.display_GUI_board(current_node.get_board())
+            game_board.display_graphic_board(current_node.get_board())
             game_board.display_textual_board(current_node.get_board())
             time.sleep(0.5)  # Delay for 1 second
+
+            legal_moves = self.transition_model.get_legal_moves(current_node)
+            board_with_legal = self.transition_model.mark_legal_actions(current_node, legal_moves)
+            game_board.display_graphic_board(board_with_legal, current_player)
+            game_board.display_textual_board(board_with_legal)
+            time.sleep(0.5)  # Delay for 1 second
+
+            if current_node.get_total_count() == max_disks:
+                time.sleep(5)
+                break
+
 
             if self.state_space.is_goal_state(current_node):
                 print("Game Over")
