@@ -87,5 +87,23 @@ class Game_Board:
         self.root.update()
 
 
+    def legal_moves_output(self, current_node, legal_moves):
+        print("********* Display all actions: ***************")
+        print("Player 1 - X (red) , Player 2 - O (white)")
 
+        for action in legal_moves:
+            successor_node = self.state_space.get_successor(current_node, action)
+            print("\nState number: ", current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS)
+            self.game_board.display_textual_board(current_node.get_board())
 
+            print(f"State number: {successor_node.get_total_count() - NUMBER_OF_INITIAL_DISKS}", end=' ')
+
+            print(f"\nPlayer {current_node.get_turn().get_color()} moved, Action ADD{action.get_position()}")
+            self.game_board.display_textual_board(successor_node.get_board())
+            #print each player's disks
+            print(f"Result: Player X:{successor_node.get_red_count()} disks ,Player O: {successor_node.get_white_count()} disks. Total disks = {successor_node.get_total_count()}")
+
+    def methodical_output(self, current_node, steps_count):
+        print(f"Step number {steps_count}")
+        self.game_board.display_textual_board(current_node.get_board())
+        print(f"Red count: {current_node.get_red_count()} White count: {current_node.get_white_count()}")

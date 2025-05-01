@@ -19,26 +19,30 @@ class Game_Engine:
         else:
             self.initial_state = self.state_space.get_initial_state()
 
-    def play(self, max_disks=None):
+    def play(self,steps = None, max_disks=None, mode = None):
 
         current_node = self.initial_state
         current_player = current_node.get_turn()
 
         skipped_turns = 0  # count of skipped turns. if both players skip, no legal moves exist for anyone and game is over
         while skipped_turns < 2 :
-
+            if mode == METHODICAL:
+                steps_count = current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS
+                if steps_count <= steps or self.state_space.is_goal_state(current_node):
+                    self.game_board.methodical_output(current_node, steps_count)
+            else:
+                self.game_board.display_textual_board(current_node.get_board())
             self.game_board.display_graphic_board(current_node.get_board())
-            self.game_board.display_textual_board(current_node.get_board())
             print('\n')
             time.sleep(0.5)  # Delay for 1 second
 
             legal_moves = self.transition_model.get_legal_moves(current_node)
             self.display_legal_moves( current_node, legal_moves)
 
-            if max_disks is not None:
+            if mode == DIESLAY_ALL_ACTIONS:
                 if current_node.get_total_count() == max_disks:
-                    self.legal_moves_output(current_node, legal_moves)
-                    break
+                        return (current_node, legal_moves)
+
 
             if current_node.get_total_count() == max_disks:
                 time.sleep(5)
@@ -71,18 +75,3 @@ class Game_Engine:
 
 
 
-    def legal_moves_output(self, current_node, legal_moves):
-        print("********* Display all actions: ***************")
-        print("Player 1 - X (red) , Player 2 - O (white)")
-
-        for action in legal_moves:
-            successor_node = self.state_space.get_successor(current_node, action)
-            print("\nState number: ", current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS)
-            self.game_board.display_textual_board(current_node.get_board())
-
-            print(f"State number: {successor_node.get_total_count() - NUMBER_OF_INITIAL_DISKS}", end=' ')
-
-            print(f"\nPlayer {current_node.get_turn().get_color()} moved, Action ADD{action.get_position()}")
-            self.game_board.display_textual_board(successor_node.get_board())
-            #print each player's disks
-            print(f"Result: Player X:{successor_node.get_red_count()} disks ,Player O: {successor_node.get_white_count()} disks. Total disks = {successor_node.get_total_count()}")
