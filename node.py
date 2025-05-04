@@ -35,6 +35,14 @@ class Node:
     def get_red_count(self):
         return self.red_count
 
+    def get_color_count(self, color):
+        if color == RED:
+            return self.red_count
+        elif color == WHITE:
+            return self.white_count
+        else:
+            raise ValueError("Invalid color. Use RED or WHITE.")
+
     def get_white_count(self):
         return self.white_count
 
