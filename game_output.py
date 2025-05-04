@@ -5,11 +5,14 @@ from action import Action
 import time
 from player import *
 from simple_player import *
+from state_space import *
+import sys
 
-class Game_Board:
-    def __init__(self, size = SIDE_SIZE):
+class Game_Output:
+    def __init__(self, state_space, size = SIDE_SIZE):
         self.cols = size
         self.rows = size
+        self.state_space = state_space
         self.canvas = None
         self.root = None
 
@@ -31,11 +34,11 @@ class Game_Board:
 
 
 
-    def display_textual_board(self, board):
+    def display_textual_board(self, board , output_file = None):
         for row in board:
             for i in range(SIDE_SIZE):
-                print(row[i], end=' ')
-            print()
+                print(row[i], end=' ', file=output_file)
+            print(file=output_file)
 
 
     def display_graphic_board(self, board, player=None):
@@ -85,25 +88,47 @@ class Game_Board:
 
         self.root.update_idletasks()
         self.root.update()
+        # time.sleep(0.2)
 
 
     def legal_moves_output(self, current_node, legal_moves):
-        print("********* Display all actions: ***************")
-        print("Player 1 - X (red) , Player 2 - O (white)")
 
-        for action in legal_moves:
-            successor_node = self.state_space.get_successor(current_node, action)
-            print("\nState number: ", current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS)
-            self.game_board.display_textual_board(current_node.get_board())
+        with open('Output.txt', 'a') as output_file:
+            original_stdout = sys.stdout  # Save the original stdout
+            sys.stdout = output_file
+            print("\n\n*************** Display all actions: ***************")
+            print("Player 1 - X (red) , Player 2 - O (white)")
 
-            print(f"State number: {successor_node.get_total_count() - NUMBER_OF_INITIAL_DISKS}", end=' ')
+            for action in legal_moves:
+                print("\nState number: ", current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS)
+                board = current_node.get_board()
+                self.display_textual_board(board, output_file)
 
-            print(f"\nPlayer {current_node.get_turn().get_color()} moved, Action ADD{action.get_position()}")
-            self.game_board.display_textual_board(successor_node.get_board())
-            #print each player's disks
-            print(f"Result: Player X:{successor_node.get_red_count()} disks ,Player O: {successor_node.get_white_count()} disks. Total disks = {successor_node.get_total_count()}")
+                successor_node = self.state_space.get_successor(current_node, action)
+                print(f"State number: {successor_node.get_total_count() - NUMBER_OF_INITIAL_DISKS}", end=' ')
+                print(f"\nPlayer {current_node.get_turn().get_color()} moved, Action ADD{action.get_position()}")
+
+                board = successor_node.get_board()
+                self.display_textual_board(board, output_file)
+                # print each player's disks count
+                print(f"Result: Player X:{successor_node.get_red_count()} disks ,Player O: {successor_node.get_white_count()} disks. Total disks = {successor_node.get_total_count()}")
+                print("---------------------------------------------------")
+            sys.stdout = original_stdout
+
+
+    def display_methodical_title(self):
+        original_stdout = sys.stdout
+        with open('Output.txt', 'a') as output_file:
+            sys.stdout = output_file
+            print("\n\n*************** Methodical: ***************")
+        sys.stdout = original_stdout
 
     def methodical_output(self, current_node, steps_count):
-        print(f"Step number {steps_count}")
-        self.game_board.display_textual_board(current_node.get_board())
-        print(f"Red count: {current_node.get_red_count()} White count: {current_node.get_white_count()}")
+        original_stdout = sys.stdout
+        with open('Output.txt', 'a') as output_file:
+            sys.stdout = output_file
+            print(f"Step number {steps_count}")
+            self.display_textual_board(current_node.get_board(), output_file)
+            print(f"Red count: {current_node.get_red_count()} White count: {current_node.get_white_count()}")
+            print("---------------------------------------------------")
+        sys.stdout = original_stdout

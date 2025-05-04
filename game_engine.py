@@ -3,15 +3,17 @@ from constants import *
 from state_space import *
 from transition_model import *
 from node import *
-from game_board import *
+from game_output import *
 import time
+
+
 
 class Game_Engine:
     def __init__(self,  players , start_node = None):
-        self.game_board = Game_Board()
-        self.game_board.initialize_GUI()
         self.transition_model = Transition_Model(players)
         self.state_space = State_Space(players, self.transition_model)
+        self.game_output = Game_Output(self.state_space)
+        self.game_output.initialize_GUI()
         self.player_red = players[0]
         self.player_white = players[1]
         if start_node:
@@ -23,34 +25,27 @@ class Game_Engine:
 
         current_node = self.initial_state
         current_player = current_node.get_turn()
+        if mode == METHODICAL:
+            self.game_output.display_methodical_title()
 
         skipped_turns = 0  # count of skipped turns. if both players skip, no legal moves exist for anyone and game is over
         while skipped_turns < 2 :
             if mode == METHODICAL:
                 steps_count = current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS
                 if steps_count <= steps or self.state_space.is_goal_state(current_node):
-                    self.game_board.methodical_output(current_node, steps_count)
+                    self.game_output.methodical_output(current_node, steps_count)
             else:
-                self.game_board.display_textual_board(current_node.get_board())
-            self.game_board.display_graphic_board(current_node.get_board())
-            print('\n')
-            time.sleep(0.5)  # Delay for 1 second
-
+                self.game_output.display_textual_board(current_node.get_board())
+            self.game_output.display_graphic_board(current_node.get_board())  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
             legal_moves = self.transition_model.get_legal_moves(current_node)
-            self.display_legal_moves( current_node, legal_moves)
+            self.display_legal_moves( current_node, legal_moves)  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
 
-            if mode == DIESLAY_ALL_ACTIONS:
+            if mode == DISPLAY_ALL_ACTIONS:
                 if current_node.get_total_count() == max_disks:
-                        return (current_node, legal_moves)
-
-
-            if current_node.get_total_count() == max_disks:
-                time.sleep(5)
-                break
-
+                    self.game_output.legal_moves_output(current_node, legal_moves)
+                    break
 
             if self.state_space.is_goal_state(current_node):
-                print("Game Over")
                 break
             legal_moves = self.transition_model.get_legal_moves(current_node)
             if not legal_moves:
@@ -69,9 +64,8 @@ class Game_Engine:
 
     def display_legal_moves(self, current_node, legal_moves):
         board_with_legal = self.transition_model.mark_legal_actions(current_node, legal_moves)
-        self.game_board.display_graphic_board(board_with_legal, current_node.get_turn())
-        # self.game_board.display_textual_board(board_with_legal)
-        time.sleep(0.5)  # Delay for 1 second
+        self.game_output.display_graphic_board(board_with_legal, current_node.get_turn())
+        # time.sleep(0.1)  # Delay for 1 second
 
 
 
