@@ -48,3 +48,6 @@ class Node:
 
     def get_total_count(self):
         return self.red_count + self.white_count
+
+    def set_turn(self, player ):
+        self.turn = player

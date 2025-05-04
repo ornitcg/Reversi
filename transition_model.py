@@ -91,10 +91,6 @@ class Transition_Model:
             board[i[0]][i[1]] = current_player.get_color()
 
 
-
-
-
-
     def expand_node(self, node):
         board = node.get_board()
         current_player = node.get_type()
@@ -135,10 +131,10 @@ class Transition_Model:
         return legal_actions
 
 
-    def get_score(self, node, action):
-        # Calculate the score based on the number of pieces flipped
-        pieces_to_flip = self.check_all_directions(node, action)
-        return len(pieces_to_flip) + 1
+    # def get_score(self, node, action):
+    #     # Calculate the score based on the number of pieces flipped
+    #     pieces_to_flip = self.check_all_directions(node, action)
+    #     return len(pieces_to_flip) + 1
 
 
     def mark_legal_actions(self, node, legal_moves):

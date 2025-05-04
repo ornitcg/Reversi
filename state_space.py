@@ -13,8 +13,6 @@ class State_Space:
         self.set_initial_state(board_side_size, self.players[0]) # RED is always first
 
 
-
-
     def set_initial_state(self, size, starting_player):
         board = []
         for i in range(size):
@@ -55,9 +53,6 @@ class State_Space:
 
     def get_successors(self, node, legal_moves):
         successors = []
-        board = node.get_board()
-        current_player = node.get_turn()
-        # legal_moves = self.transition_model.get_legal_moves(node)
         for action in legal_moves:
             successors.append(self.get_successor(node, action))
         return successors

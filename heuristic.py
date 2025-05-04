@@ -22,11 +22,6 @@ class Heuristic:
         self.transition_model = transition_model
 
     def calculate(self, node, perspective_player):
-        """
-        Calculate a heuristic value for the given node.
-        and from a specific perspective color
-        """
-
         board = node.get_board()
         perspective_color = perspective_player.get_color()
         opponent_color = WHITE if perspective_color == RED else RED
@@ -45,23 +40,27 @@ class Heuristic:
         piece_diff = perspective_color_count - opponent_color_count
 
         # Combine the scores with appropriate weights
-        # Adjust these weights based on testing
-        total_score = (piece_diff * 1.0) + (mobility_score * 2.0) + (position_score * 3.0)
+        count = node.get_total_count()
+        board_size = SIDE_SIZE *SIDE_SIZE
+        if (count < board_size * (1/3) ):
+            total_score = (piece_diff * 1.0) + (mobility_score * 2.0) + (position_score * 3.0)
+        elif (count < board_size *(2/3) ):
+            total_score = (piece_diff * 1.0) + (mobility_score * 2.0) + (position_score * 3.0)
+        else:
+            total_score = (piece_diff * 1.0) + (mobility_score * 2.0) + (position_score * 3.0)
         return total_score
 
     def calculate_mobility_delta(self, node, perspective_player):
-        """
-        Calculate delta of mobility between both players in the current position
-        """
-        board = node.get_board()
+
+        # Calculate delta of mobility between both players in the current position
         opponent_player = self.transition_model.get_next_player(perspective_player)
 
-        # Create test nodes for each player
+        # Create artificial test nodes for each player
         perspective_node = copy.deepcopy(node)
-        perspective_node.turn = perspective_player
+        perspective_node.set_turn(perspective_player)
 
         opponent_node = copy.deepcopy(node)
-        opponent_node.turn = opponent_player
+        opponent_node.set_turn(opponent_player)
 
         # Count legal moves for each player in the CURRENT position
         perspective_legal_moves = len(self.transition_model.get_legal_moves(perspective_node))
@@ -88,3 +87,6 @@ class Heuristic:
                     opponent_color_value += position_weight
 
         return perspective_color_value - opponent_color_value
+
+    def get_transition_model(self):
+        return self.transition_model
