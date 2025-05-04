@@ -6,11 +6,12 @@ from transition_model import *
 
 
 class State_Space:
-    def __init__(self, players, transition_model=None, board_side_size=SIDE_SIZE ):
-        self.players = players
-        self.initial_state = None
-        self.set_initial_state(board_side_size, players[0]) # RED is always first
+    def __init__(self, transition_model, board_side_size=SIDE_SIZE ):
         self.transition_model = transition_model
+        self.players = self.transition_model.get_players()
+        self.initial_state = None
+        self.set_initial_state(board_side_size, self.players[0]) # RED is always first
+
 
 
 

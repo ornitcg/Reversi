@@ -26,11 +26,7 @@ class Transition_Model:
             successor = Node(board, node, action, self.get_next_player(current_player), value)  #parent is the current node, action is the action taken to get to this state, and turn is the next player
             return  successor
 
-    def skip_turn(self, node):
-        current_player = node.get_turn()
-        new_board = copy.deepcopy(node.get_board())
-        successor = Node(new_board, node, None, self.get_next_player(current_player), 0)
-        return successor
+
 
 
 
@@ -115,11 +111,13 @@ class Transition_Model:
     def get_next_player(self, current_player):
         return self.player1 if current_player == self.player2 else self.player2
 
-    def skip_turn(self, node, player):
+
+    def skip_turn(self, node):
         current_player = node.get_turn()
         new_board = copy.deepcopy(node.get_board())
         successor = Node(new_board, node, None, self.get_next_player(current_player), 0)
         return successor
+
 
     def get_legal_moves(self, node):
         legal_actions = []  #list of action objects
@@ -149,3 +147,7 @@ class Transition_Model:
             row, col = action.get_position()
             board[row][col] = LEGAL
         return board
+
+
+    def get_players(self):
+        return self.players

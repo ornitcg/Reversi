@@ -9,13 +9,15 @@ import time
 
 
 class Game_Engine:
-    def __init__(self,  players , start_node = None):
-        self.transition_model = Transition_Model(players)
-        self.state_space = State_Space(players, self.transition_model)
+    def __init__(self, transition_model, state_space,  start_node = None, heuristic = None):
+        self.transition_model = transition_model
+        self.heuristic = heuristic
+        self.players = self.transition_model.get_players()
+        self.state_space = state_space
         self.game_output = Game_Output(self.state_space)
         self.game_output.initialize_GUI()
-        self.player_red = players[0]
-        self.player_white = players[1]
+        self.player_red = self.players[0]
+        self.player_white = self.players[1]
         if start_node:
             self.initial_state = start_node
         else:
@@ -54,7 +56,7 @@ class Game_Engine:
 
             else:
                 skipped_turns = 0
-                action = current_player.choose_action(current_node, legal_moves)
+                action = current_player.choose_action(current_node, legal_moves, self.heuristic)
 
             successor_node = self.transition_model.apply_action(current_node, action)
             current_node = successor_node

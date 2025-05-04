@@ -51,7 +51,7 @@ class Heuristic:
 
     def calculate_mobility_delta(self, node, perspective_player):
         """
-        Calculate delta of  mobility between both players in the current position
+        Calculate delta of mobility between both players in the current position
         """
         board = node.get_board()
         opponent_player = self.transition_model.get_next_player(perspective_player)
