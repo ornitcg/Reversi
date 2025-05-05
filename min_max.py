@@ -37,10 +37,10 @@ class Min_Max:
         # Base case: if depth is 0 or game is over, return heuristic value# Base case: if we reached the maximum depth or terminal state
         if depth == 0 or self.state_space.is_goal_state(node):
             # Evaluate the board from the perspective of the original player
-            return self.heuristic.calculate(node, perspective_player), node.get_action()
+            return self.heuristic.calculate(node, perspective_player), None
         ### get legal actions from tm
         turn = node.get_turn()
-        legal_actions = self.transition_model.get_legal_moves(node,)
+        legal_actions = self.transition_model.get_legal_moves(node)
         scored_actions = []
         for action in legal_actions:
             # Create successor node by applying this action

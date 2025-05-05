@@ -14,8 +14,7 @@ class Min_Max_Player(Smart_Player):
         super().__init__(color)
 
     def choose_action(self, node, legal_actions, heuristic: Heuristic = None, min_max=None, depth = None):
-
-        chosen_action = Action(SKIP)
+        chosen_action = None
         # Choose the first legal action - could also be a skip action.
         if min_max:
             score, chosen_action = min_max.min_max(node, depth, node.get_turn())
