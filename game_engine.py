@@ -9,10 +9,8 @@ import time
 
 
 class Game_Engine:
-    def __init__(self, transition_model, state_space,  start_node = None, heuristic = None, tree= None):
+    def __init__(self, transition_model, state_space,  start_node = None):
         self.transition_model = transition_model
-        self.heuristic = heuristic
-        self.tree = tree
         self.players = self.transition_model.get_players()
         self.state_space = state_space
         self.game_output = Game_Output(self.state_space)
@@ -24,7 +22,7 @@ class Game_Engine:
         else:
             self.initial_state = self.state_space.get_initial_state()
 
-    def play(self,steps = None, max_disks=None, mode = None, wait=False):
+    def play(self,steps = None, max_disks=None, mode = None,  heuristic=None, min_max=None, depth=None, wait=False):
 
         current_node = self.initial_state
         current_player = current_node.get_turn()
@@ -52,7 +50,7 @@ class Game_Engine:
                 print(f"Game Over! Red: {current_node.get_red_count()}, White: {current_node.get_white_count() }")
                 break
             legal_moves = self.transition_model.get_legal_moves(current_node)
-            action = current_player.choose_action(current_node, legal_moves, self.heuristic, self.tree)
+            action = current_player.choose_action(current_node, legal_moves, heuristic=heuristic , min_max= min_max, depth=depth)
             if action.get_type() == SKIP:
                 skipped_turns += 1
             else:

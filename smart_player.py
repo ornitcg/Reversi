@@ -11,12 +11,18 @@ class Smart_Player(Simple_Player):
     def __init__(self, color):
         super().__init__(color)
 
-    def choose_action(self, node, legal_actions, heuristic: Heuristic = None, tree=None):
+    def choose_action(self, node, legal_actions, heuristic: Heuristic = None, min_max=None):
         max_score = -float('inf')
         chosen_action = Action(SKIP)
-        tm = heuristic.get_transition_model()
+        if heuristic:
+            tm = heuristic.get_transition_model()
         # Choose the first legal action - could also be a skip action.
-        if heuristic is not None:
+        if min_max:
+            tm = min_max.get_transition_model()
+            score, chosen_action = min_max.min_max(node, legal_actions, node.get_turn())
+
+
+        elif heuristic:
             for action in legal_actions:
                 if action.get_type() == ADD:
                     # Check if the action is legal
@@ -25,5 +31,6 @@ class Smart_Player(Simple_Player):
                     if score > max_score:
                         max_score = score
                         chosen_action = action
+
         return chosen_action
 
