@@ -10,7 +10,7 @@ class Simple_Player(Player):
         super().__init__(color)
 
 
-    def choose_action(self, node, legal_actions, heuristic = None, tree=None):
+    def choose_action(self, node, legal_actions, heuristic = None, min_max=None, depth=None):
         # Choose the first legal action - could also be a skip action.
         if legal_actions:
             return legal_actions[0]

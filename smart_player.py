@@ -11,7 +11,7 @@ class Smart_Player(Simple_Player):
     def __init__(self, color):
         super().__init__(color)
 
-    def choose_action(self, node, legal_actions, heuristic: Heuristic = None, min_max=None):
+    def choose_action(self, node, legal_actions, heuristic = None, min_max=None, depth=None):
         max_score = -float('inf')
         chosen_action = Action(SKIP)
         if heuristic:

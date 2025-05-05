@@ -37,9 +37,9 @@ class Game_Engine:
                     self.game_output.methodical_output(current_node, steps_count)
             else:
                 self.game_output.display_textual_board(current_node.get_board())
-            self.game_output.display_graphic_board(current_node.get_board(), wait=wait)  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
+            self.game_output.display_graphic_board(current_node.get_board(), wait=wait)
             legal_moves = self.transition_model.get_legal_moves(current_node)
-            self.display_legal_moves( current_node, legal_moves, wait=wait)  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
+            self.display_legal_moves( current_node, legal_moves, wait=wait)
 
             if mode == DISPLAY_ALL_ACTIONS:
                 if current_node.get_total_count() == max_disks:
@@ -51,6 +51,9 @@ class Game_Engine:
                 break
             legal_moves = self.transition_model.get_legal_moves(current_node)
             action = current_player.choose_action(current_node, legal_moves, heuristic=heuristic , min_max= min_max, depth=depth)
+            if action is None:
+                action = Action(SKIP)
+
             if action.get_type() == SKIP:
                 skipped_turns += 1
             else:

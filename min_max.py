@@ -13,32 +13,12 @@ class Min_Max:
         self.heuristic = heuristic
 
 
-    # def calculate(self, node, legal_actions, origin_player):
-    #     turn = node.get_turn()
-    #     max_score = -float('inf')
-    #     chosen_action = Action(SKIP)
-    #
-    #     for action in legal_actions:
-    #         # Create successor node by applying this action
-    #         successor = self.transition_model.apply_action(node, action)
-    #
-    #         # Calculate the minimax value for this move
-    #         score = self.minimax(successor, self.depth - 1, origin_player  )
-    #
-    #         # Update best action if we found a better score
-    #         if score > max_score:
-    #             max_score = score
-    #             chosen_action = action
-    #
-    #     return chosen_action
-
     def min_max(self, node, depth, perspective_player):
 
         # Base case: if depth is 0 or game is over, return heuristic value# Base case: if we reached the maximum depth or terminal state
         if depth == 0 or self.state_space.is_goal_state(node):
             # Evaluate the board from the perspective of the original player
-            return self.heuristic.calculate(node, perspective_player), None
-        ### get legal actions from tm
+            return self.heuristic.calculate(node, perspective_player), node.get_action()
         turn = node.get_turn()
         legal_actions = self.transition_model.get_legal_moves(node)
         scored_actions = []
@@ -64,12 +44,7 @@ class Min_Max:
             return max_score, max_action
         else:
             return min_score, min_action
-        #### loop on it and get score for each by minmax
 
-
-
-
-        #### collect to list all sscores calced by minmax fo all successors
 
 
     def get_transition_model(self):

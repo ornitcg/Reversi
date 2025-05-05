@@ -13,7 +13,7 @@ class Min_Max_Player(Smart_Player):
     def __init__(self, color):
         super().__init__(color)
 
-    def choose_action(self, node, legal_actions, heuristic: Heuristic = None, min_max=None, depth = None):
+    def choose_action(self, node, legal_actions, heuristic = None, min_max=None, depth = None):
         chosen_action = None
         # Choose the first legal action - could also be a skip action.
         if min_max:

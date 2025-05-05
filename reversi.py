@@ -46,6 +46,9 @@ def main():
 
     elif args.command == 'H' and args.ahead is not None:
        depth = args.ahead
+       if depth <1:
+              print(f"Depth must be greater than 0")
+              return
        players = [Min_Max_Player(RED), Min_Max_Player(WHITE)]
        tm = Transition_Model(players)
        sp = State_Space(tm)
@@ -65,14 +68,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    print("no main")
-    print(f"Running game with heuristic evaluation")
-    depth = 2
-    players = [Min_Max_Player(RED), Min_Max_Player(WHITE)]
-    tm = Transition_Model(players)
-    sp = State_Space(tm)
-    heuristic = Heuristic(tm)
-    min_max = Min_Max(tm, sp, heuristic=heuristic)
-    simulate_game(tm, sp, mode=H, min_max=min_max, depth=depth)
+   main()
+
+
 
