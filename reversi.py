@@ -54,7 +54,7 @@ def main():
        sp = State_Space(tm)
        heuristic = Heuristic(tm)
        min_max = Min_Max(tm, sp, heuristic=heuristic )
-       simulate_game(tm, sp, mode=H, min_max=min_max, depth=depth)
+       simulate_game(tm, sp, mode=AHEAD, min_max=min_max, depth=depth)
 
 
     elif args.command == 'H':

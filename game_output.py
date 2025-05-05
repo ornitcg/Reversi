@@ -133,3 +133,13 @@ class Game_Output:
             print(f"Red count: {current_node.get_red_count()} White count: {current_node.get_white_count()}")
             print("---------------------------------------------------")
         sys.stdout = original_stdout
+
+    def ahead_output(self, current_node):
+        original_stdout = sys.stdout
+        with open('Output.txt', 'a') as output_file:
+            sys.stdout = output_file
+            print("\n\n*************** AHEAD: final state ***************")
+            self.display_textual_board(current_node.get_board(), output_file)
+            print(f"Red count: {current_node.get_red_count()} White count: {current_node.get_white_count()}")
+            print("---------------------------------------------------")
+        sys.stdout = original_stdout

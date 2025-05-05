@@ -35,6 +35,7 @@ class Game_Engine:
                 steps_count = current_node.get_total_count() - NUMBER_OF_INITIAL_DISKS
                 if steps_count <= steps or self.state_space.is_goal_state(current_node):
                     self.game_output.methodical_output(current_node, steps_count)
+
             else:
                 self.game_output.display_textual_board(current_node.get_board())
             self.game_output.display_graphic_board(current_node.get_board(), wait=wait)
@@ -48,6 +49,8 @@ class Game_Engine:
 
             if self.state_space.is_goal_state(current_node):
                 print(f"Game Over! Red: {current_node.get_red_count()}, White: {current_node.get_white_count() }")
+                if mode == AHEAD:
+                    self.game_output.ahead_output(current_node)
                 break
             legal_moves = self.transition_model.get_legal_moves(current_node)
             action = current_player.choose_action(current_node, legal_moves, heuristic=heuristic , min_max= min_max, depth=depth)
