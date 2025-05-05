@@ -48,9 +48,9 @@ class Min_Max:
             score , act = self.min_max(successor, depth - 1, perspective_player)
             scored_actions.append((score, action))
 
-        min_score = float('-inf')
+        min_score = float('inf')
         min_action = Action(SKIP)
-        max_score = float('inf')
+        max_score = float('-inf')
         max_action = Action(SKIP)
 
         for score, action in scored_actions:
