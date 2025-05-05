@@ -39,9 +39,9 @@ class Game_Output:
             for i in range(SIDE_SIZE):
                 print(row[i], end=' ', file=output_file)
             print(file=output_file)
+        print()
 
-
-    def display_graphic_board(self, board, player=None):
+    def display_graphic_board(self, board, player=None, wait = False):
         if self.canvas is None or self.root is None:
             self.initialize_GUI()
 
@@ -88,7 +88,8 @@ class Game_Output:
 
         self.root.update_idletasks()
         self.root.update()
-        # time.sleep(0.2)
+        if wait:
+            time.sleep(0.5)
 
 
     def legal_moves_output(self, current_node, legal_moves):

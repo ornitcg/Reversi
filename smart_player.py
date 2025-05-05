@@ -11,8 +11,8 @@ class Smart_Player(Simple_Player):
     def __init__(self, color):
         super().__init__(color)
 
-    def choose_action(self, node, legal_actions, heuristic: Heuristic = None):
-        max_score = 0
+    def choose_action(self, node, legal_actions, heuristic: Heuristic = None, tree=None):
+        max_score = -float('inf')
         chosen_action = Action(SKIP)
         tm = heuristic.get_transition_model()
         # Choose the first legal action - could also be a skip action.
@@ -26,3 +26,4 @@ class Smart_Player(Simple_Player):
                         max_score = score
                         chosen_action = action
         return chosen_action
+

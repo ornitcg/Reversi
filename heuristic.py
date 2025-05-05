@@ -34,7 +34,7 @@ class Heuristic:
         mobility_score = self.calculate_mobility_delta(node, perspective_player)
 
         # Position score - weighted value of positions
-        position_score = self.calculate_position_value(board, perspective_color)
+        position_score = self.calculate_position_value_delta(board, perspective_color)
 
         # Piece difference score
         piece_diff = perspective_color_count - opponent_color_count
@@ -42,12 +42,26 @@ class Heuristic:
         # Combine the scores with appropriate weights
         count = node.get_total_count()
         board_size = SIDE_SIZE *SIDE_SIZE
+
         if (count < board_size * (1/3) ):
-            total_score = (piece_diff * 1.0) + (mobility_score * 2.0) + (position_score * 3.0)
+            w_piece = 0.1
+            w_mobility = 0.5
+            w_position = 0.4
+
         elif (count < board_size *(2/3) ):
-            total_score = (piece_diff * 1.0) + (mobility_score * 2.0) + (position_score * 3.0)
+            w_piece = 0.2
+            w_mobility = 0.2
+            w_position = 0.6
         else:
-            total_score = (piece_diff * 1.0) + (mobility_score * 2.0) + (position_score * 3.0)
+            w_piece = 0.7
+            w_mobility = 0.1
+            w_position = 0.2
+
+        position_factor = 0.01
+        adjusted_position_score = position_score * position_factor
+
+        total_score = (piece_diff * w_piece) + (mobility_score * w_mobility) + (adjusted_position_score * w_position)
+
         return total_score
 
     def calculate_mobility_delta(self, node, perspective_player):
@@ -70,8 +84,8 @@ class Heuristic:
         return perspective_legal_moves - opponent_legal_moves
 
 
-    def calculate_position_value(self, board, perspective_color):
-        """Calculate the value of pieces based on their positions"""
+    def calculate_position_value_delta(self, board, perspective_color):
+        #Calculate the delta of pieces based on their positions
         opponent_color = WHITE if perspective_color == RED else RED
         perspective_color_value = 0
         opponent_color_value = 0

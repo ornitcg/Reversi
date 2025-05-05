@@ -6,7 +6,7 @@ class Player:
         self.color = color
         self.opponent_color = WHITE if color == RED else RED
 
-    def choose_action(self, node, legal_actions, heuristic = None):
+    def choose_action(self, node, legal_actions, heuristic = None, tree=None):
         pass
 
     def get_color(self):

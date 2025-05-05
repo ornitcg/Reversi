@@ -128,6 +128,10 @@ class Transition_Model:
                     is_legal = self.is_legal(node, action)
                     if is_legal:
                         legal_actions.append(action)
+        if not legal_actions:
+            action = Action(SKIP)
+            legal_actions.append(action)
+
         return legal_actions
 
 
@@ -140,8 +144,9 @@ class Transition_Model:
     def mark_legal_actions(self, node, legal_moves):
         board = copy.deepcopy(node.get_board())
         for action in legal_moves:
-            row, col = action.get_position()
-            board[row][col] = LEGAL
+            if action.get_type() is not SKIP:
+                row, col = action.get_position()
+                board[row][col] = LEGAL
         return board
 
 

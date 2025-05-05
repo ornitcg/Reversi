@@ -9,9 +9,10 @@ import time
 
 
 class Game_Engine:
-    def __init__(self, transition_model, state_space,  start_node = None, heuristic = None):
+    def __init__(self, transition_model, state_space,  start_node = None, heuristic = None, tree= None):
         self.transition_model = transition_model
         self.heuristic = heuristic
+        self.tree = tree
         self.players = self.transition_model.get_players()
         self.state_space = state_space
         self.game_output = Game_Output(self.state_space)
@@ -23,7 +24,7 @@ class Game_Engine:
         else:
             self.initial_state = self.state_space.get_initial_state()
 
-    def play(self,steps = None, max_disks=None, mode = None):
+    def play(self,steps = None, max_disks=None, mode = None, wait=False):
 
         current_node = self.initial_state
         current_player = current_node.get_turn()
@@ -38,9 +39,9 @@ class Game_Engine:
                     self.game_output.methodical_output(current_node, steps_count)
             else:
                 self.game_output.display_textual_board(current_node.get_board())
-            self.game_output.display_graphic_board(current_node.get_board())  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
+            self.game_output.display_graphic_board(current_node.get_board(), wait=wait)  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
             legal_moves = self.transition_model.get_legal_moves(current_node)
-            self.display_legal_moves( current_node, legal_moves)  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
+            self.display_legal_moves( current_node, legal_moves, wait=wait)  # UNCOMMENT THIS , TO SEE THE GAME PROCCESS
 
             if mode == DISPLAY_ALL_ACTIONS:
                 if current_node.get_total_count() == max_disks:
@@ -48,15 +49,14 @@ class Game_Engine:
                     break
 
             if self.state_space.is_goal_state(current_node):
+                print(f"Game Over! Red: {current_node.get_red_count()}, White: {current_node.get_white_count() }")
                 break
             legal_moves = self.transition_model.get_legal_moves(current_node)
-            if not legal_moves:
+            action = current_player.choose_action(current_node, legal_moves, self.heuristic, self.tree)
+            if action.get_type() == SKIP:
                 skipped_turns += 1
-                action = Action(SKIP)
-
             else:
                 skipped_turns = 0
-                action = current_player.choose_action(current_node, legal_moves, self.heuristic)
 
             successor_node = self.transition_model.apply_action(current_node, action)
             current_node = successor_node
@@ -64,10 +64,11 @@ class Game_Engine:
 
 
 
-    def display_legal_moves(self, current_node, legal_moves):
+    def display_legal_moves(self, current_node, legal_moves, wait=False):
         board_with_legal = self.transition_model.mark_legal_actions(current_node, legal_moves)
         self.game_output.display_graphic_board(board_with_legal, current_node.get_turn())
-        # time.sleep(0.1)  # Delay for 1 second
+        if wait:
+            time.sleep(0.3)  # Delay for 1 second
 
 
 
